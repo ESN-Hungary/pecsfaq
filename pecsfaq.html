@@ -1,0 +1,440 @@
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet">
+<style type="text/css">/* ESN inspired colors - added specific ESN brand colors */
+        :root {
+            --esn-cyan: #00aeef; /* ESN Cyan */
+            --esn-magenta: #ec008c; /* ESN Magenta */
+            --esn-green: #7ac143; /* ESN Green */
+            --esn-orange: #f47b20; /* ESN Orange */
+            --esn-dark-blue: #2e3192; /* ESN Dark Blue */
+            --esn-red: #e03e5c; /* Accent red (as previously used for H1) */
+
+            /* General UI colors, adapted to ESN palette */
+            --esn-light-gray: #f8fcfd; /* Very subtle light blue/white for default card background */
+            --esn-pale-blue: #e6f2ff; /* Paler blue for active/hover backgrounds and answer bodies */
+            --esn-medium-gray: #d0dbe7; /* Softer border color */
+            --esn-dark-text: #333333; /* Darker text color for content */
+            --esn-shadow: rgba(0, 0, 0, 0.06); /* Lighter, friendlier shadow */
+            --esn-hover-shadow: rgba(0, 0, 0, 0.1); /* Lighter hover shadow */
+            --esn-card-bg: #ffffff; /* White background for individual cards */
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            background-color: #ffffff;
+            color: var(--esn-dark-text);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            box-sizing: border-box;
+        }
+
+        .faq-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+            box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2 {
+            color: var(--esn-dark-blue); /* Using ESN Dark Blue */
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        h1 {
+            color: var(--esn-red); /* Using ESN Red for main title */
+            font-size: 2.8em;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+            padding-top: 40px;
+            margin-bottom: 40px;
+            font-weight: 800;
+        }
+
+        .questions-section {
+            padding: 20px;
+            max-width: 760px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+        }
+
+        .question-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 40px;
+        }
+
+        .faq-item {
+            background-color: var(--esn-card-bg);
+            border: 1px solid var(--esn-medium-gray);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px var(--esn-shadow);
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .faq-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--esn-hover-shadow);
+            border-color: var(--esn-cyan); /* Border highlight with ESN Cyan on hover */
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            background-color: var(--esn-card-bg);
+            cursor: pointer;
+            font-size: 1.15em;
+            color: var(--esn-dark-blue); /* Question text with ESN Dark Blue */
+            font-weight: 600;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        .faq-item.open .question-header {
+            border-bottom: 1px solid var(--esn-medium-gray);
+            background-color: var(--esn-pale-blue); /* Pale blue background when open */
+        }
+
+        .question-header:hover {
+            background-color: var(--esn-pale-blue);
+            color: var(--esn-cyan); /* Question text with ESN Cyan on hover */
+        }
+
+        .question-header h3 {
+            margin: 0;
+            color: inherit;
+            border-bottom: none;
+            padding-bottom: 0;
+            flex-grow: 1;
+        }
+
+        /* Style for links within the question header */
+        .question-header h3 a {
+            color: inherit; /* Inherit color from the parent h3 */
+            text-decoration: none; /* No underline by default */
+            transition: text-decoration 0.3s ease;
+        }
+
+        .question-header h3 a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
+
+
+        .toggle-icon {
+            font-size: 1.3em;
+            margin-left: 12px;
+            transition: transform 0.3s ease, color 0.3s ease;
+            color: var(--esn-dark-blue); /* Icon color with ESN Dark Blue */
+        }
+
+        .faq-item.open .toggle-icon {
+            transform: rotate(180deg);
+            color: var(--esn-cyan); /* Icon color with ESN Cyan when open */
+        }
+
+        .answer-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            /* Set padding to 0 when closed to prevent peeking */
+            padding: 0;
+            box-sizing: border-box;
+            color: var(--esn-dark-text);
+            background-color: var(--esn-pale-blue); /* Pale blue background for answer content */
+        }
+
+        /* When the answer is open, JavaScript will set the exact max-height and apply padding */
+        .faq-item.open .answer-body {
+            /* Reduced padding for a more compact answer box */
+            padding: 15px 22px 20px 22px; /* Apply padding when open */
+        }
+
+        /* No need for first-child margin when padding is handled correctly */
+        .answer-body > *:first-child {
+            margin-top: 0;
+        }
+
+        .answer-body p {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            color: var(--esn-dark-text);
+            overflow-wrap: break-word; /* Ensure long words/URLs break to prevent horizontal scroll */
+        }
+
+        .answer-body ul, .answer-body ol {
+            margin-left: 25px;
+            margin-bottom: 12px;
+            color: var(--esn-dark-text);
+            padding-left: 0;
+            overflow-wrap: break-word; /* Ensure long words/URLs in lists break */
+        }
+
+        .answer-body ul li, .answer-body ol li {
+            margin-bottom: 6px;
+        }
+
+        .answer-body a {
+            color: var(--esn-orange); /* Links in answers with ESN Orange */
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+
+        .answer-body a:hover {
+            text-decoration: underline;
+            color: var(--esn-magenta); /* Links in answers with ESN Magenta on hover */
+        }
+
+        .contact-box {
+            background-color: var(--esn-dark-blue); /* Contact box with ESN Dark Blue */
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            margin: 40px auto 60px auto;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .contact-box p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .contact-box a.instagram-link {
+            display: inline-block;
+            background-color: #ffffff;
+            color: var(--esn-dark-blue); /* Instagram link text with ESN Dark Blue */
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-box a.instagram-link:hover {
+            background-color: var(--esn-green); /* Instagram link background with ESN Green on hover */
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+                padding-top: 25px;
+                margin-bottom: 30px;
+            }
+            h2 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .question-header {
+                font-size: 1.05em;
+                padding: 15px 20px;
+            }
+            .answer-body {
+                padding: 10px 20px 20px 20px;
+            }
+            .faq-item {
+                margin-bottom: 15px;
+            }
+            .questions-section {
+                padding: 0 15px;
+            }
+            .contact-box {
+                margin: 30px auto 40px auto;
+                padding: 25px 15px;
+            }
+            .contact-box p {
+                font-size: 1.1em;
+            }
+            .contact-box a.instagram-link {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+                padding-top: 20px;
+                margin-bottom: 25px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .question-header {
+                font-size: 0.95em;
+                padding: 12px 15px;
+            }
+            .answer-body {
+                padding: 8px 15px 15px 15px;
+            }
+            .faq-item {
+                margin-bottom: 12px;
+            }
+            .questions-section {
+                padding: 0 10px;
+            }
+            .contact-box {
+                margin: 25px auto 30px auto;
+                padding: 20px 10px;
+            }
+            .contact-box p {
+                font-size: 1.1em;
+            }
+        }
+</style>
+<h1>ESN Pécs - Frequently Asked Questions</h1>
+<h2>Questions</h2>
+<ul class="question-list">
+<li class="faq-item">
+	<div aria-controls="answer1" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>1. What's ESN Pécs, and why should I care?</h3><span class="toggle-icon">▼</span></div>
+	<div class="answer-body" id="answer1"><p>Think of ESN Pécs as your instant student family here! They're a non-profit group run by students, for students. Their main goal is to help international students like you feel at home, make friends, and experience Hungarian culture through cool events, trips, and parties. Plus, they help you with practica</p></div>
+</li>
+<li class="faq-item">
+	<div aria-controls="answer2" aria-expanded="false" class="question-header" role="button" tabindex="0"><span class="toggle-icon">▼</span></div>
+	<div class="answer-body" id="answer2"><p>The **ESNcard** is a membership card offered by the Erasmus Student Network (ESN) to international students and other eligible individuals. It provides access to a variety of services and discounts offered by ESN and its partners across Europe. Essentially, it's a student ID that unlocks benefits and opportunities related to international mobility and student life. Totally! The ESN Galaxy Card is like a magic key to discounts. You can get money off Ryanair flights (10%!), Flixbus, Norigo Travels, food places like Noon Baghi, Nappali, Reggeli, and bars like Csinos, Traffik and many more, even cultural stuff. Find more information on the official <a href="https://esncard.org/discover/list?query=pecs" target="_blank">ESNcard w</a></p></div>
+	</li>
+	</ul>
+		<div aria-controls="answer3" aria-expanded="false" class="question-header faq-item" role="button" tabindex="0"><span class="toggle-icon">▼</span></div>
+		<div class="answer-body faq-item" id="answer3"><p>Easy peasy!</p>
+			<ol>
+				<li>First, make an account on the **PTE EHÖK website** (<a href="https://ehok.pte.hu/login" target="_blank">ehok.pte.hu/login</a>).</li>
+				<li>Book an appointment through your account.</li>
+				<li>Go to the **EHOOK office** (Vasvari Pal u.4, 7622) for your appointment with your **passport/ID and 6000 HUF**. Boom, card get!</li>
+			</ol>
+		</div>
+	<ul class="question-list">
+		<li class="faq-item">
+			<div aria-controls="answer4" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>2. I'm flying into Budapest. What's the best way to get to Pécs without losing my mind (or all my money)?</h3><span class="toggle-icon">▼</span></div>
+			<div class="answer-body" id="answer4"><p>You've got options!</p>
+				<ul>
+					<li><strong>Easiest (but pricier):</strong> Book a **shuttle/minibus** (like Travel 4 You, Norigo Travel). Costs around 40 EUR, but it's door-to door, great if you have lots of luggage.</li>
+					<li><strong>Comfy &amp; Scenic:</strong> Take the **intercity train**. It's about 3.5 hours. You'll need to take bus 200E from the airport, then a M4,M3 metros to Keleti train station. A full-price ticket to Pécs is about 3700 HUF (around 9 EUR).</li>
+					<li><strong>Budget-Friendly:</strong> **Long-journey bus**. Similar to the train, take bus 200E, then a metro to Népliget bus station. Tickets are around 4200 HUF(cash only from the driver or buy online). Remember to validate your public transport tickets in Budapest!</li>
+				</ul>
+			</div>
+		</li>
+		<li class="faq-item">
+			<div aria-controls="answer5" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>3. Help! I'm from the EU. Do I need a visa to study in Pécs?</h3><span class="toggle-icon">▼</span></div>
+			<div class="answer-body" id="answer5"><p>Good news! If you're an **EEA (EU + Norway, Iceland, Liechtenstein) or Swiss citizen**, you can enter Hungary with your ID/passport and stay for up to 90 days. For longer stays (like for your studies), you just need to **register at the regional office of the National Directorate-General for Aliens Policing within 93 days of arrival**. Bring your admission certificate!</p></div>
+		</li>
+		<li class="faq-item">
+			<div aria-controls="answer6" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>4. What if I get sick? How does healthcare work in Pécs for international students?</h3><span class="toggle-icon">▼</span></div>
+			<div class="answer-body" id="answer6">
+				<ul>
+					<li><strong>EU/EEA Citizens:</strong> Your **European Health Insurance Card (EHIC)** covers medically necessary care.</li>
+					<li><strong>Everyone:</strong> It's highly recommended that you get local **private medical insurance**. You can also apply for a Hungarian Social Security Card (**TAJ kártya**) to access the public healthcare system. Your program coordinator might help, or you can apply yourself or online via Neptun.</li>
+					<li><strong>Seeing a Doctor (GP):</strong> Go to the **Centre for Occupational Health and Hygiene** (Nyár u. 8), or call +36 72 507 523 for an appointment.</li>
+					<li><strong>Emergencies:</strong> General emergency is **112**. Ambulance is **104**. For serious illness/accidents, go to **Janus Pannonius Clinical Block** (Ifjúság út 13).</li>
+				</ul>
+			</div>
+		</li>
+		<li class="faq-item">
+			<div aria-controls="answer7" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>5. How do I get my official Hungarian Student ID card for those sweet local discounts?</h3><span class="toggle-icon">▼</span></div>
+			<div class="answer-body" id="answer7"><p>You'll want this for cheaper transport and museum tickets!</p>
+			<ol>
+				<li>Go to the **'Government Office'** to fill out the application. Make sure your data EXACTLY matches your passport and Neptun record.</li>
+				<li>Get your **'NEK' number** from this document and enter it into Neptun (Administration/student card request).</li>
+				<li>Pick up your **temporary student card** from the central registrar's office (make an appointment at <a href="https://time.pte.hu" target="_blank">time.pte.hu</a>) or your faculty's registrar's office, depending on your faculty.</li>
+				<li>You'll get a Neptun notification when your **permanent card** is ready to pick up!</li>
+			</ol>
+			</div>
+		</li>
+		<li class="faq-item"><div aria-controls="answer8" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>6. Where am I going to live? Dorms vs. Apartments in Pécs?</h3><span class="toggle-icon">▼</span></div><div class="answer-body" id="answer8"><ul><li><strong>Dorms:</strong> Simplest and often cheapest. Rooms are cleaned, and bed linen is changed. Rent is roughly 63,000-82,000 HUF/month. You'll need your passport, a passport photo, rent money, and proof of student status to check in. Bring kitchen basics, towels, and maybe your own bedsheets.</li><li><strong>Renting an Apartment:</strong> More freedom, but more responsibility. A 2-room flat can be 80,000-200,000 HUF/month (plus utilities and a deposit, usually 1-2 months' rent). Check out reputable services like <a href="https://studenthousing.hu" target="_blank">studenthousing.hu</a> or <a href="https://studentservice.hu" target="_blank">studentservice.hu</a>.</li></ul></div></li><li class="faq-item"><div aria-controls="answer9" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>7. I need to open a bank account. Any tips?</h3><span class="toggle-icon">▼</span></div><div class="answer-body" id="answer9"><p>It's a good idea for managing your finances locally. Many banks are in the city centre (UniCredit, MKB, Erste, OTP, etc.). You'll usually need your **ID card/passport and residence card (or permit)**. Best to ask the specific bank what documents they require as this can vary.</p></div></li><li class="faq-item"><div aria-controls="answer10" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>8. Feeling a bit overwhelmed or have some legal questions (like with my landlord). Is there anyone at the uni who can help?</h3><span class="toggle-icon">▼</span></div><div class="answer-body" id="answer10"><p>Absolutely!</p><ul><li><strong>Wellbeing &amp; Counselling:</strong> The university offers free, confidential psychological counselling. Email <a href="mailto:counselling@pte.hu">counselling@pte.hu</a> for an appointment.</li><li><strong>Legal Help:</strong> The **Campus Legal Aid Clinic (CLAC)** offers free legal advice from law students supervised by professors. They can help with lease agreements, etc. Email <a href="mailto:jogklinika@ajk.pte.hu">jogklinika@ajk.pte.hu</a>. Office: Dohány Street 1-3, Floor #2.</li></ul></div></li><li class="faq-item"><div aria-controls="answer11" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>9. Alright, I'm settled in! Where can I grab some good food and what's there to do for fun in Pécs, especially on a student budget? �🎉</h3><span class="toggle-icon">▼</span></div><div class="answer-body" id="answer11"><p>You're in luck! Pécs has cool spots, and your ESN connections help a lot!</p><ul><li><strong>ESN Pécs Events:</strong> This is your **BEST bet** for fun and meeting people! They organize awesome social and cultural events like international cuisine festivals (yum!), movie nights, language projects, trips around Hungary, and of course, parties! Keep an eye on their announcements – they're always cooking up something new.</li><li><strong>ESN Card Foodie Discounts:</strong> Your **ESN Galaxy card** scores you deals like:<ul><li>10% off at **Noon Baghi**</li><li>A free topping at **Find Tea**</li><li>10% off at **Bubble Land**</li><li>Discounts at local bars like **Csinos** and **Traffik**!</li></ul></li><li><strong>Fun with Discounts:</strong><ul><li>Your **ESN Card** gets you 10% off cultural and leisure activities through **Tiqts**, and can mean reduced entry fees for museums and galleries across Europe.</li><li>Don't forget your official **Hungarian Student ID card** also gets you discounts on things like public transport and museum admissions in Hungary!</li></ul></li></ul><p>So, definitely link up with ESN Pécs for events and use that ESN card for savings while you explore the city's vibrant offerings!</p></div></li><li class="faq-item"><div aria-controls="answer12" aria-expanded="false" class="question-header" role="button" tabindex="0"><h3>10. ESN Pécs sounds exactly like what I need! How do I "join" or get involved with all the cool stuff they do? 🤝🌍</h3><span class="toggle-icon">▼</span></div><div class="answer-body" id="answer12"><p>That's the spirit! ESN Pécs is all about "students helping students," and they love having new international students connect with them. The best way to "join" in the fun and get their support is to:</p><ul><li><strong>Follow them online:</strong> This is where you'll find out about all their events, activities, trips, and parties.<ul><li>Website: <a href="https://pecs.esn.hu/" target="_blank">https://pecs.esn.hu/</a></li><li>Facebook: <a href="https://www.facebook.com/pecs.esn" target="_blank">https://www.facebook.com/pecs.esn</a></li><li>Instagram: <a href="https://www.instagram.com/esn.pecs/" target="_blank">https://www.instagram.com/esn.pecs/</a></li></ul></li><li><strong>Attend their events:</strong> Just show up! They organize things specifically for international students, so you'll be very welcome. This is the main way to benefit from what ESN Pécs offers and to meet other students.</li><li><strong>Reach out:</strong> If you're interested in becoming an active volunteer member yourself and contributing to ESN Pécs, contacting them through their social media or website is the best first step to find out how you can contribute!</li></ul><p>By connecting with them, you'll become part of the ESN community in Pécs and get access to all their support and fun activities!</p></div></li></ul><div class="contact-box"><p>Couldn't find your answer here?</p><a class="instagram-link" href="https://www.instagram.com/esn.pecs/" target="_blank">Direct message ESN Pécs on Instagram!</a></div><script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const header = item.querySelector('.question-header');
+                const answerBody = item.querySelector('.answer-body');
+
+                // Ensure all answer bodies are closed on load
+                // This explicitly sets max-height to 0 and removes the 'open' class
+                answerBody.style.maxHeight = '0';
+                item.classList.remove('open');
+                header.setAttribute('aria-expanded', false);
+
+
+                header.addEventListener('click', function() {
+                    const isOpen = item.classList.contains('open');
+
+                    if (isOpen) {
+                        // If currently open, close it.
+                        // First, set max-height to its current scrollHeight to ensure a smooth transition
+                        // from the actual content height, then transition to 0.
+                        answerBody.style.maxHeight = answerBody.scrollHeight + 'px';
+                        // Force a reflow to ensure the browser applies the above max-height before transitioning
+                        // to 0. This is crucial for the transition to work correctly when collapsing.
+                        void answerBody.offsetWidth; // Trigger reflow
+                        answerBody.style.maxHeight = '0'; // Start collapse animation
+
+                        item.classList.remove('open');
+                        this.setAttribute('aria-expanded', false);
+                    } else {
+                        // If currently closed, open it.
+                        // Add the 'open' class first. This applies the CSS padding.
+                        item.classList.add('open');
+                        // Set max-height to the actual scrollHeight of the content plus a small buffer.
+                        // Since 'open' class is already applied, scrollHeight includes the CSS padding.
+                        answerBody.style.maxHeight = (answerBody.scrollHeight + 10) + 'px'; // Increased buffer to 10px
+
+                        // Optional: After the transition completes, you could set maxHeight to 'auto'
+                        // to ensure it adapts to any future content changes without clipping.
+                        // However, for typical FAQ sections, scrollHeight is usually sufficient.
+                        // answerBody.addEventListener('transitionend', function handler() {
+                        //     if (item.classList.contains('open')) {
+                        //         answerBody.style.maxHeight = 'auto';
+                        //     }
+                        //     answerBody.removeEventListener('transitionend', handler);
+                        // });
+
+                        this.setAttribute('aria-expanded', true);
+                    }
+                });
+
+                // Add keyboard accessibility for Enter and Spacebar keys
+                header.addEventListener('keydown', function(event) {
+                    // Check for Enter key (keyCode 13 or key 'Enter') or Spacebar (keyCode 32 or key ' ')
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); // Prevent default actions like scrolling for spacebar
+                        this.click(); // Simulate a click event on the header
+                    }
+                });
+            });
+        });
+    </script><p>�</p>
